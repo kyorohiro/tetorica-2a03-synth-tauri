@@ -1,0 +1,701 @@
+{
+  "schemaVersion": 1,
+  "product": "Tetorica 2A03 Synth",
+  "productId": "tetorica-2a03-synth",
+  "version": "tauri-0.0.1-20261105",
+  "builder": {
+    "name": "source-copy",
+    "minify": false,
+    "bundle": false,
+    "dependencyAnalyzer": {
+      "name": "esbuild",
+      "version": "0.28.2"
+    }
+  },
+  "bundles": [
+    {
+      "path": "synth-2a03/synth.js",
+      "sourcePath": "docs/synth-2a03/synth.js",
+      "bytes": 21092,
+      "sha256": "2e33241f6152d8e4e7aaeb5a7590f04160987c2d37874123357f666f1512b6d0",
+      "localImports": [
+        "../synth-spu/spu_synth_visualizer.js",
+        "../synth/synth_keyboard.js",
+        "./audio.js",
+        "./editor.js",
+        "./hardware_monitor.js",
+        "./panel_layout.js",
+        "./preset.js",
+        "./state_observer.js",
+        "./vgm_library.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/processor.js",
+      "sourcePath": "docs/synth-2a03/processor.js",
+      "bytes": 4743,
+      "sha256": "ef9247d4c44fbb56fb4eaac7a023d796399666ef4bb4ca17c85d4a7359976beb",
+      "localImports": [
+        "../generated/nesapu_wasm.js",
+        "../js/nesapu_wasm.js",
+        "./click_guard.js",
+        "./instrument.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/synth.css",
+      "sourcePath": "docs/synth-2a03/synth.css",
+      "bytes": 13677,
+      "sha256": "a19ce6c48617858d3388865aa076c1a0846c7af5b021691ee6d93574fd19e4f3",
+      "localImports": [
+        "../synth-spu/synth.css"
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "path": "js/chip_worklet_transport.js",
+      "sourcePath": "docs/js/chip_worklet_transport.js",
+      "bytes": 15514,
+      "sha256": "4adcc8a58773fb970700a9846e628fcfea20e5d16b43778ea80d0e083b630a7b",
+      "localImports": []
+    },
+    {
+      "path": "js/fds_audio.js",
+      "sourcePath": "docs/js/fds_audio.js",
+      "bytes": 5112,
+      "sha256": "a40594267909ec49f07897913877e3e27aee345ed783f8044d7f5f6e13c09ee9",
+      "localImports": []
+    },
+    {
+      "path": "js/nes_apu_vendor/channel-dm.js",
+      "sourcePath": "docs/js/nes_apu_vendor/channel-dm.js",
+      "bytes": 6890,
+      "sha256": "94eed4be74f42c3a12f0559e736cefa73598be4b49bb83cd95ff619183b7cae7",
+      "localImports": [
+        "./utils.js"
+      ]
+    },
+    {
+      "path": "js/nes_apu_vendor/channel-noise.js",
+      "sourcePath": "docs/js/nes_apu_vendor/channel-noise.js",
+      "bytes": 3592,
+      "sha256": "9955835564f858bbb74927d0ffc202f815c24f67d63d17be09308a7cd5ccb812",
+      "localImports": [
+        "./utils.js"
+      ]
+    },
+    {
+      "path": "js/nes_apu_vendor/channel-square.js",
+      "sourcePath": "docs/js/nes_apu_vendor/channel-square.js",
+      "bytes": 5728,
+      "sha256": "668da0573d064a3c6a7afe777f84d1635c7d541cfae315ee477b2209adbc6317",
+      "localImports": [
+        "./utils.js"
+      ]
+    },
+    {
+      "path": "js/nes_apu_vendor/channel-triangle.js",
+      "sourcePath": "docs/js/nes_apu_vendor/channel-triangle.js",
+      "bytes": 3615,
+      "sha256": "4729ea94c099b7c08b6f74c3d96249212261c1f1bbf3ba53dd261e18347c6506",
+      "localImports": [
+        "./utils.js"
+      ]
+    },
+    {
+      "path": "js/nes_apu_vendor/index.js",
+      "sourcePath": "docs/js/nes_apu_vendor/index.js",
+      "bytes": 31024,
+      "sha256": "04b0d09d5a3a8dad0667d764decc6e261c81c83ab493e2423191f259f2a98122",
+      "localImports": [
+        "./channel-dm.js",
+        "./channel-noise.js",
+        "./channel-square.js",
+        "./channel-triangle.js",
+        "./utils.js"
+      ]
+    },
+    {
+      "path": "js/nes_apu_vendor/utils.js",
+      "sourcePath": "docs/js/nes_apu_vendor/utils.js",
+      "bytes": 1154,
+      "sha256": "3e97884bae801319ac802378ace60591f489dec533aec2e26663685ab08f378c",
+      "localImports": []
+    },
+    {
+      "path": "js/nesapu.js",
+      "sourcePath": "docs/js/nesapu.js",
+      "bytes": 4116,
+      "sha256": "0b3c5187f2630ea675636b1da600f9ab1358a176208e111052676f7e1003e80d",
+      "localImports": [
+        "./nesapu_wasm.js?v=nes-wasm-1",
+        "./nesapuaudioengine.js"
+      ]
+    },
+    {
+      "path": "js/nesapu_wasm.js",
+      "sourcePath": "docs/js/nesapu_wasm.js",
+      "bytes": 9324,
+      "sha256": "0bc07cab4c52cef9d62041f1ab532610c4e6158ae48e7c854178107138a45e2b",
+      "localImports": [
+        "./nesapu.js?v=nes-wasm-1"
+      ]
+    },
+    {
+      "path": "js/nesapuaudioengine.js",
+      "sourcePath": "docs/js/nesapuaudioengine.js",
+      "bytes": 5704,
+      "sha256": "5c0f6d91170b339cca384d5cdf99180af39c2b6a0b2afdb14b8582a04676c947",
+      "localImports": [
+        "./fds_audio.js",
+        "./nes_apu_vendor/index.js"
+      ]
+    },
+    {
+      "path": "js/nesapusynth.js",
+      "sourcePath": "docs/js/nesapusynth.js",
+      "bytes": 15155,
+      "sha256": "be2b1c3008fe6617852b3dd194c018bb85089375443775444df1879e445a3f1e",
+      "localImports": [
+        "./chip_worklet_transport.js?v=pokey-mode-1",
+        "./nesapu.js?v=nes-wasm-1",
+        "./soundchip_pitch.js"
+      ]
+    },
+    {
+      "path": "js/opn_fm_vgm.js",
+      "sourcePath": "docs/js/opn_fm_vgm.js",
+      "bytes": 4213,
+      "sha256": "d9535987aa4284e817172b1cff3cfbdbe893cca70b6cebfe4c09f616802bbc1c",
+      "localImports": []
+    },
+    {
+      "path": "js/soundchip_pitch.js",
+      "sourcePath": "docs/js/soundchip_pitch.js",
+      "bytes": 2854,
+      "sha256": "c8bcce0f27c2500d6090b5e56660e697b8b03d7ec011cee4deba05664038bae9",
+      "localImports": []
+    },
+    {
+      "path": "js/vgm_file.js",
+      "sourcePath": "docs/js/vgm_file.js",
+      "bytes": 3428,
+      "sha256": "2539d82ea2b17f5d37b7f66e88bcc948acda4d906613358c14a1bd102c36bf48",
+      "localImports": []
+    },
+    {
+      "path": "js/ym2612vgm.js",
+      "sourcePath": "docs/js/ym2612vgm.js",
+      "bytes": 117637,
+      "sha256": "1587950d955d577262a11e754f533133b8194d65272e740c8b48b9f3b465e06b",
+      "localImports": [
+        "./opn_fm_vgm.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/audio.js",
+      "sourcePath": "docs/synth-2a03/audio.js",
+      "bytes": 6849,
+      "sha256": "e2dad4648d1b09330f9ecfc952e88e4069a3623579dcee5979c2acf55a24e043",
+      "localImports": []
+    },
+    {
+      "path": "synth-2a03/click_guard.js",
+      "sourcePath": "docs/synth-2a03/click_guard.js",
+      "bytes": 3651,
+      "sha256": "b27c8a8e576f1f71dbf5a2e3a935cc602f854f1053b05a0ff0af34287638f16b",
+      "localImports": []
+    },
+    {
+      "path": "synth-2a03/dmc_decode.js",
+      "sourcePath": "docs/synth-2a03/dmc_decode.js",
+      "bytes": 2878,
+      "sha256": "ae3c95c8b2ef7b51679ad766e7fa46da1ede799caa024c48724c2a3c841a7b4c",
+      "localImports": [
+        "./preset.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/dmc_draw.js",
+      "sourcePath": "docs/synth-2a03/dmc_draw.js",
+      "bytes": 3331,
+      "sha256": "24fff41f6eea60163ef8bcc9bd6a90800ad3b9a2518b9e3d38ec00705fb0a6a1",
+      "localImports": [
+        "./preset.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/dmc_editor.js",
+      "sourcePath": "docs/synth-2a03/dmc_editor.js",
+      "bytes": 28751,
+      "sha256": "8dab3338ad1e7dc7acfe6b2699b285df1cbcc43bbf8606389c4f690ce25ac08d",
+      "localImports": [
+        "./dmc_decode.js",
+        "./dmc_draw.js",
+        "./dmc_fit.js",
+        "./dmc_history.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/dmc_fit.js",
+      "sourcePath": "docs/synth-2a03/dmc_fit.js",
+      "bytes": 9430,
+      "sha256": "bdcc6e01b040c6ad74a323074def716dd4a715a7675ab75bdb527db916aca71c",
+      "localImports": [
+        "./preset.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/dmc_history.js",
+      "sourcePath": "docs/synth-2a03/dmc_history.js",
+      "bytes": 2751,
+      "sha256": "bf03b5cce4cb459091cd5d054d747cb74d47ecf5611354a83d408180a2ca33d6",
+      "localImports": [
+        "./preset.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/editor.js",
+      "sourcePath": "docs/synth-2a03/editor.js",
+      "bytes": 42245,
+      "sha256": "ec965fe9339031996d11fb497a6875306548e241b318588a30c673920f0e31ce",
+      "localImports": [
+        "./dmc_editor.js",
+        "./fds_depth_controls.js",
+        "./preset.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/fds_depth_controls.js",
+      "sourcePath": "docs/synth-2a03/fds_depth_controls.js",
+      "bytes": 2413,
+      "sha256": "0e169ae89f748a84082404759362d3eb46fec486f8041c54e40ad9e13ae1c5b7",
+      "localImports": [
+        "./preset.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/hardware_monitor.js",
+      "sourcePath": "docs/synth-2a03/hardware_monitor.js",
+      "bytes": 4954,
+      "sha256": "96f0a543f3ac6703366ded167b32eba870fb13336b1af23d612bd65795b6c8a0",
+      "localImports": [
+        "./hardware_state.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/hardware_state.js",
+      "sourcePath": "docs/synth-2a03/hardware_state.js",
+      "bytes": 5340,
+      "sha256": "e3ade64bbfee52702f7c9a0d00f567c6b6b8ccf63aa71627e863ae0b4350e39e",
+      "localImports": []
+    },
+    {
+      "path": "synth-2a03/instrument.js",
+      "sourcePath": "docs/synth-2a03/instrument.js",
+      "bytes": 14407,
+      "sha256": "c8528dc53198b6261df67cf7ca2d645983c15657073e3bd6c6648eb13aca050c",
+      "localImports": [
+        "../js/nesapusynth.js",
+        "./preset.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/panel_layout.js",
+      "sourcePath": "docs/synth-2a03/panel_layout.js",
+      "bytes": 2709,
+      "sha256": "df3b3a6676d83de07f293853958950896334c2ef6f53fb9d1b5a16bd6da386b0",
+      "localImports": []
+    },
+    {
+      "path": "synth-2a03/preset.js",
+      "sourcePath": "docs/synth-2a03/preset.js",
+      "bytes": 16093,
+      "sha256": "8d5ae97dd70ef3b818da598646a037b30aa8c897ceb2c44cd309d426b016479c",
+      "localImports": []
+    },
+    {
+      "path": "synth-2a03/processor.js",
+      "sourcePath": "docs/synth-2a03/processor.js",
+      "bytes": 4743,
+      "sha256": "ef9247d4c44fbb56fb4eaac7a023d796399666ef4bb4ca17c85d4a7359976beb",
+      "localImports": [
+        "../generated/nesapu_wasm.js",
+        "../js/nesapu_wasm.js",
+        "./click_guard.js",
+        "./instrument.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/state_observer.js",
+      "sourcePath": "docs/synth-2a03/state_observer.js",
+      "bytes": 3794,
+      "sha256": "8c74bb2c41eca685061aac707445c20d17f962131c8b14cca1a8771119fa33bd",
+      "localImports": []
+    },
+    {
+      "path": "synth-2a03/synth.css",
+      "sourcePath": "docs/synth-2a03/synth.css",
+      "bytes": 13677,
+      "sha256": "a19ce6c48617858d3388865aa076c1a0846c7af5b021691ee6d93574fd19e4f3",
+      "localImports": [
+        "../synth-spu/synth.css"
+      ]
+    },
+    {
+      "path": "synth-2a03/synth.js",
+      "sourcePath": "docs/synth-2a03/synth.js",
+      "bytes": 21092,
+      "sha256": "2e33241f6152d8e4e7aaeb5a7590f04160987c2d37874123357f666f1512b6d0",
+      "localImports": [
+        "../synth-spu/spu_synth_visualizer.js",
+        "../synth/synth_keyboard.js",
+        "./audio.js",
+        "./editor.js",
+        "./hardware_monitor.js",
+        "./panel_layout.js",
+        "./preset.js",
+        "./state_observer.js",
+        "./vgm_library.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/vgm_dmc.js",
+      "sourcePath": "docs/synth-2a03/vgm_dmc.js",
+      "bytes": 7247,
+      "sha256": "2afaf0472fd194692eeed63f729c2a97f0784930283509ca4a8322b52ecd534f",
+      "localImports": []
+    },
+    {
+      "path": "synth-2a03/vgm_import.js",
+      "sourcePath": "docs/synth-2a03/vgm_import.js",
+      "bytes": 22287,
+      "sha256": "1e5bfb0cef248dcfc4f51994c2779d343e045fdf082f67409bc0d85efd58d741",
+      "localImports": [
+        "../js/vgm_file.js",
+        "../js/ym2612vgm.js",
+        "./preset.js",
+        "./vgm_dmc.js"
+      ]
+    },
+    {
+      "path": "synth-2a03/vgm_library.js",
+      "sourcePath": "docs/synth-2a03/vgm_library.js",
+      "bytes": 6161,
+      "sha256": "d24d07cd123a079b174cc1a29c08f00adeea3377b0c172a305b25dbbd2ac6926",
+      "localImports": [
+        "./vgm_import.js"
+      ]
+    },
+    {
+      "path": "synth-spu/spu_synth_visualizer.js",
+      "sourcePath": "docs/synth-spu/spu_synth_visualizer.js",
+      "bytes": 10421,
+      "sha256": "0e4cba8d283d728579e592b28a87f008165b5d5d00d1cb4956e90b06f84d6b47",
+      "localImports": []
+    },
+    {
+      "path": "synth-spu/synth.css",
+      "sourcePath": "docs/synth-spu/synth.css",
+      "bytes": 23333,
+      "sha256": "8e45689b279e52db21c5ed6b29e26bd5d10896abcd8c834a1d77bc6950dcd0ad",
+      "localImports": []
+    },
+    {
+      "path": "synth/synth_keyboard.js",
+      "sourcePath": "docs/synth/synth_keyboard.js",
+      "bytes": 10010,
+      "sha256": "b7dc1daea64aa6e061bfdb2295010ee24eddaba51ab7ab6cf87c0f751be7c795",
+      "localImports": [
+        "../js/soundchip_pitch.js"
+      ]
+    }
+  ],
+  "originalInputs": [
+    {
+      "path": "LICENSE",
+      "bytes": 1519,
+      "sha256": "2d2e9213c170a9866c616fa85b6da993a6724e10befc61f468ed9bfb84c4691c"
+    },
+    {
+      "path": "docs/js/chip_worklet_transport.js",
+      "bytes": 15514,
+      "sha256": "4adcc8a58773fb970700a9846e628fcfea20e5d16b43778ea80d0e083b630a7b"
+    },
+    {
+      "path": "docs/js/fds_audio.js",
+      "bytes": 5112,
+      "sha256": "a40594267909ec49f07897913877e3e27aee345ed783f8044d7f5f6e13c09ee9"
+    },
+    {
+      "path": "docs/js/nes_apu_vendor/channel-dm.js",
+      "bytes": 6890,
+      "sha256": "94eed4be74f42c3a12f0559e736cefa73598be4b49bb83cd95ff619183b7cae7"
+    },
+    {
+      "path": "docs/js/nes_apu_vendor/channel-noise.js",
+      "bytes": 3592,
+      "sha256": "9955835564f858bbb74927d0ffc202f815c24f67d63d17be09308a7cd5ccb812"
+    },
+    {
+      "path": "docs/js/nes_apu_vendor/channel-square.js",
+      "bytes": 5728,
+      "sha256": "668da0573d064a3c6a7afe777f84d1635c7d541cfae315ee477b2209adbc6317"
+    },
+    {
+      "path": "docs/js/nes_apu_vendor/channel-triangle.js",
+      "bytes": 3615,
+      "sha256": "4729ea94c099b7c08b6f74c3d96249212261c1f1bbf3ba53dd261e18347c6506"
+    },
+    {
+      "path": "docs/js/nes_apu_vendor/index.js",
+      "bytes": 31024,
+      "sha256": "04b0d09d5a3a8dad0667d764decc6e261c81c83ab493e2423191f259f2a98122"
+    },
+    {
+      "path": "docs/js/nes_apu_vendor/utils.js",
+      "bytes": 1154,
+      "sha256": "3e97884bae801319ac802378ace60591f489dec533aec2e26663685ab08f378c"
+    },
+    {
+      "path": "docs/js/nesapu.js",
+      "bytes": 4116,
+      "sha256": "0b3c5187f2630ea675636b1da600f9ab1358a176208e111052676f7e1003e80d"
+    },
+    {
+      "path": "docs/js/nesapu_wasm.js",
+      "bytes": 9324,
+      "sha256": "0bc07cab4c52cef9d62041f1ab532610c4e6158ae48e7c854178107138a45e2b"
+    },
+    {
+      "path": "docs/js/nesapuaudioengine.js",
+      "bytes": 5704,
+      "sha256": "5c0f6d91170b339cca384d5cdf99180af39c2b6a0b2afdb14b8582a04676c947"
+    },
+    {
+      "path": "docs/js/nesapusynth.js",
+      "bytes": 15155,
+      "sha256": "be2b1c3008fe6617852b3dd194c018bb85089375443775444df1879e445a3f1e"
+    },
+    {
+      "path": "docs/js/opn_fm_vgm.js",
+      "bytes": 4213,
+      "sha256": "d9535987aa4284e817172b1cff3cfbdbe893cca70b6cebfe4c09f616802bbc1c"
+    },
+    {
+      "path": "docs/js/soundchip_pitch.js",
+      "bytes": 2854,
+      "sha256": "c8bcce0f27c2500d6090b5e56660e697b8b03d7ec011cee4deba05664038bae9"
+    },
+    {
+      "path": "docs/js/vgm_file.js",
+      "bytes": 3428,
+      "sha256": "2539d82ea2b17f5d37b7f66e88bcc948acda4d906613358c14a1bd102c36bf48"
+    },
+    {
+      "path": "docs/js/ym2612vgm.js",
+      "bytes": 117637,
+      "sha256": "1587950d955d577262a11e754f533133b8194d65272e740c8b48b9f3b465e06b"
+    },
+    {
+      "path": "docs/synth-2a03/README.md",
+      "bytes": 32593,
+      "sha256": "45500f34df983137a80151f974e0aea368de39b1ac1ad5c2536366aae14234e2"
+    },
+    {
+      "path": "docs/synth-2a03/audio.js",
+      "bytes": 6849,
+      "sha256": "e2dad4648d1b09330f9ecfc952e88e4069a3623579dcee5979c2acf55a24e043"
+    },
+    {
+      "path": "docs/synth-2a03/click_guard.js",
+      "bytes": 3651,
+      "sha256": "b27c8a8e576f1f71dbf5a2e3a935cc602f854f1053b05a0ff0af34287638f16b"
+    },
+    {
+      "path": "docs/synth-2a03/dmc_decode.js",
+      "bytes": 2878,
+      "sha256": "ae3c95c8b2ef7b51679ad766e7fa46da1ede799caa024c48724c2a3c841a7b4c"
+    },
+    {
+      "path": "docs/synth-2a03/dmc_draw.js",
+      "bytes": 3331,
+      "sha256": "24fff41f6eea60163ef8bcc9bd6a90800ad3b9a2518b9e3d38ec00705fb0a6a1"
+    },
+    {
+      "path": "docs/synth-2a03/dmc_editor.js",
+      "bytes": 28751,
+      "sha256": "8dab3338ad1e7dc7acfe6b2699b285df1cbcc43bbf8606389c4f690ce25ac08d"
+    },
+    {
+      "path": "docs/synth-2a03/dmc_fit.js",
+      "bytes": 9430,
+      "sha256": "bdcc6e01b040c6ad74a323074def716dd4a715a7675ab75bdb527db916aca71c"
+    },
+    {
+      "path": "docs/synth-2a03/dmc_history.js",
+      "bytes": 2751,
+      "sha256": "bf03b5cce4cb459091cd5d054d747cb74d47ecf5611354a83d408180a2ca33d6"
+    },
+    {
+      "path": "docs/synth-2a03/editor.js",
+      "bytes": 42245,
+      "sha256": "ec965fe9339031996d11fb497a6875306548e241b318588a30c673920f0e31ce"
+    },
+    {
+      "path": "docs/synth-2a03/fds_depth_controls.js",
+      "bytes": 2413,
+      "sha256": "0e169ae89f748a84082404759362d3eb46fec486f8041c54e40ad9e13ae1c5b7"
+    },
+    {
+      "path": "docs/synth-2a03/hardware_monitor.js",
+      "bytes": 4954,
+      "sha256": "96f0a543f3ac6703366ded167b32eba870fb13336b1af23d612bd65795b6c8a0"
+    },
+    {
+      "path": "docs/synth-2a03/hardware_state.js",
+      "bytes": 5340,
+      "sha256": "e3ade64bbfee52702f7c9a0d00f567c6b6b8ccf63aa71627e863ae0b4350e39e"
+    },
+    {
+      "path": "docs/synth-2a03/index.html",
+      "bytes": 11123,
+      "sha256": "0f1356b722623e9f4245549ba2bb3fffa51a24cdfad7a60617410b31a0625130"
+    },
+    {
+      "path": "docs/synth-2a03/instrument.js",
+      "bytes": 14407,
+      "sha256": "c8528dc53198b6261df67cf7ca2d645983c15657073e3bd6c6648eb13aca050c"
+    },
+    {
+      "path": "docs/synth-2a03/panel_layout.js",
+      "bytes": 2709,
+      "sha256": "df3b3a6676d83de07f293853958950896334c2ef6f53fb9d1b5a16bd6da386b0"
+    },
+    {
+      "path": "docs/synth-2a03/preset.js",
+      "bytes": 16093,
+      "sha256": "8d5ae97dd70ef3b818da598646a037b30aa8c897ceb2c44cd309d426b016479c"
+    },
+    {
+      "path": "docs/synth-2a03/processor.js",
+      "bytes": 4743,
+      "sha256": "ef9247d4c44fbb56fb4eaac7a023d796399666ef4bb4ca17c85d4a7359976beb"
+    },
+    {
+      "path": "docs/synth-2a03/state_observer.js",
+      "bytes": 3794,
+      "sha256": "8c74bb2c41eca685061aac707445c20d17f962131c8b14cca1a8771119fa33bd"
+    },
+    {
+      "path": "docs/synth-2a03/synth.css",
+      "bytes": 13677,
+      "sha256": "a19ce6c48617858d3388865aa076c1a0846c7af5b021691ee6d93574fd19e4f3"
+    },
+    {
+      "path": "docs/synth-2a03/synth.js",
+      "bytes": 21092,
+      "sha256": "2e33241f6152d8e4e7aaeb5a7590f04160987c2d37874123357f666f1512b6d0"
+    },
+    {
+      "path": "docs/synth-2a03/vgm_dmc.js",
+      "bytes": 7247,
+      "sha256": "2afaf0472fd194692eeed63f729c2a97f0784930283509ca4a8322b52ecd534f"
+    },
+    {
+      "path": "docs/synth-2a03/vgm_import.js",
+      "bytes": 22287,
+      "sha256": "1e5bfb0cef248dcfc4f51994c2779d343e045fdf082f67409bc0d85efd58d741"
+    },
+    {
+      "path": "docs/synth-2a03/vgm_library.js",
+      "bytes": 6161,
+      "sha256": "d24d07cd123a079b174cc1a29c08f00adeea3377b0c172a305b25dbbd2ac6926"
+    },
+    {
+      "path": "docs/synth-spu/spu_synth_visualizer.js",
+      "bytes": 10421,
+      "sha256": "0e4cba8d283d728579e592b28a87f008165b5d5d00d1cb4956e90b06f84d6b47"
+    },
+    {
+      "path": "docs/synth-spu/synth.css",
+      "bytes": 23333,
+      "sha256": "8e45689b279e52db21c5ed6b29e26bd5d10896abcd8c834a1d77bc6950dcd0ad"
+    },
+    {
+      "path": "docs/synth/synth_keyboard.js",
+      "bytes": 10010,
+      "sha256": "b7dc1daea64aa6e061bfdb2295010ee24eddaba51ab7ab6cf87c0f751be7c795"
+    },
+    {
+      "path": "docs/tetorica_2a03_synth.webp",
+      "bytes": 422778,
+      "sha256": "3f53c2e3435254b674e90e66cbf545dfe0b02e1a5455d971b25e5df14a93bbfc"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 55415,
+      "sha256": "25b371d87334725070a1d055e140a426e5aecf6101db517c8be803d363d22849"
+    },
+    {
+      "path": "package.json",
+      "bytes": 4441,
+      "sha256": "a6e1929c6b45a7c0998532fe07cf2a2d7a87e9a2cf3aac45bcb9ef391668aeae"
+    },
+    {
+      "path": "scripts/copy_nes_sources.mjs",
+      "bytes": 4076,
+      "sha256": "1e469c405e7a1a74a4d89449fb919cc6a1aacf847841b5bd4aa3568f34797d80"
+    },
+    {
+      "path": "scripts/copy_readable_modules.mjs",
+      "bytes": 3657,
+      "sha256": "bf58b3f05bfc2a48f7a35a0cb3f797436ed6f379af251e8ecf03240ba297d05a"
+    },
+    {
+      "path": "scripts/package_itch_2a03_synth.mjs",
+      "bytes": 7108,
+      "sha256": "c81777b25fc8bf1cba368637e9c48ccd4a388a250b28ae8b1f13ebd3698df844"
+    },
+    {
+      "path": "scripts/package_itch_2a03_synth.sh",
+      "bytes": 182,
+      "sha256": "4276772d4a28c446bcb4c1ed285535b837ca9824c7c55c42866f8aeb434811fa"
+    },
+    {
+      "path": "scripts/runtime_artifacts.mjs",
+      "bytes": 17918,
+      "sha256": "a811bffb77472b2d3d8b11c57d0477e216b867d00c75bf844b4089af0fb69d39"
+    },
+    {
+      "path": "scripts/wasm_sdk_inventory.mjs",
+      "bytes": 24241,
+      "sha256": "b65e5e1966756e6f20f4a47989611a0f1b702446e97d748f92e87eaad245bab5"
+    },
+    {
+      "path": "tetorica_src/runtime/generated/nesapu_wasm.js",
+      "bytes": 16041,
+      "sha256": "6bafd0913fd0834514b450396204cef9835a1c3e8c927c5a51f0951c98103a2b"
+    },
+    {
+      "path": "third_party/soundchip-sdk.json",
+      "bytes": 430,
+      "sha256": "a722b24ec5e01316605821f2f2c96eada8695c7b6dd5e82836c48a8a34ddc5a4"
+    },
+    {
+      "path": "third_party/tetorica-soundchip-native/RELEASE-MANIFEST.json",
+      "bytes": 72110,
+      "sha256": "b5e4c75230c32c66aa2ba4248830af7e7587a5977529973c346063afd2d2f365"
+    }
+  ],
+  "sourceArchive": {
+    "path": "sources/2a03-synth-browser-inputs.zip",
+    "bytes": 646876,
+    "sha256": "6f8e19ca8fe2404ff6d2b353487489e6e7c841531ebb57557299990ef5a2480c"
+  },
+  "sourceCheck": {
+    "inputs": 11,
+    "sdkVersion": "0.1.7"
+  }
+}

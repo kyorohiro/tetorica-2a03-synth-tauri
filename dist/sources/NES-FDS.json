@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "component": "nesapu",
+  "sdk": {
+    "schemaVersion": 1,
+    "name": "tetorica-soundchip-native",
+    "version": "0.1.7",
+    "sourceCommit": "95cf71a857b15d0ea932ebf97d5fde80b5e80a95",
+    "archiveName": "tetorica-soundchip-native-0.1.7-sources.zip",
+    "archiveSha256": "5f7cdf35bc85a7453eef42576259f615411d4fdcdd47b8778242eb2a2d7f2b9c",
+    "manifestSha256": "b5e4c75230c32c66aa2ba4248830af7e7587a5977529973c346063afd2d2f365",
+    "fileCount": 476,
+    "unpublished": true
+  },
+  "inputs": [
+    {
+      "path": "sources/NES-FDS.md",
+      "bytes": 1058,
+      "sha256": "b17df645ef2ea88a9bf8ed836aa04f2b8c7660729c40f554c0d6d586cba29459"
+    },
+    {
+      "path": "sources/scripts/build_nesapu_wasm.sh",
+      "bytes": 1082,
+      "sha256": "884ff7505447afc232e860bac6e633652ed26c6097c5e0a10e5c14dffee09c4d"
+    },
+    {
+      "path": "sources/third_party/tetorica-nes/AUTHORS-JSNES.md",
+      "bytes": 390,
+      "sha256": "7d65bfd33da03428907b8213520832c26c9531f08c1f1dd2794dd477b9764b6a"
+    },
+    {
+      "path": "sources/third_party/tetorica-nes/LICENSE-FDS",
+      "bytes": 1062,
+      "sha256": "f906a51cbcf80751c1d3cba9920e5ff87b95a2721587a509b632a76af09e89ce"
+    },
+    {
+      "path": "sources/third_party/tetorica-nes/LICENSE-JSNES",
+      "bytes": 10758,
+      "sha256": "530136cec696ac1fcdeb792a77472cb273f9f814ad0ed795dccdc95db7423e0a"
+    },
+    {
+      "path": "sources/third_party/tetorica-nes/README.md",
+      "bytes": 3903,
+      "sha256": "a05841c89d8a6a892d772b57d8e3501bf6b28ef8f50226731bb0cab401261396"
+    },
+    {
+      "path": "sources/third_party/tetorica-nes/UPSTREAM-FDS.md",
+      "bytes": 1149,
+      "sha256": "012c4710304da747754bc21ab7683e41f406e83de42b03b0bc4531c0ba5e1316"
+    },
+    {
+      "path": "sources/third_party/tetorica-nes/UPSTREAM-JSNES.md",
+      "bytes": 924,
+      "sha256": "58808d4249949339577eff9a5312ebc357755cd328d8bfa59621d399f2bac792"
+    },
+    {
+      "path": "sources/third_party/tetorica-nes/nes_core.cpp",
+      "bytes": 32166,
+      "sha256": "6658f4012eeac783ea72693b2284dd150dcb2e22a1f29859b83e1ae3d333f959"
+    },
+    {
+      "path": "sources/third_party/tetorica-nes/nes_core.h",
+      "bytes": 2163,
+      "sha256": "7834ca83834271574d58ba754061ca8eea619776a7acea6f702cfe3b811b3b31"
+    },
+    {
+      "path": "sources/wasm/nesapu_wasm.cpp",
+      "bytes": 2389,
+      "sha256": "49f5f980b5685fc4b3878369e367700e37fbf143db4930765ab347a702d7e105"
+    }
+  ],
+  "generated": {
+    "nesapu_wasm.js": {
+      "bytes": 16041,
+      "sha256": "6bafd0913fd0834514b450396204cef9835a1c3e8c927c5a51f0951c98103a2b"
+    },
+    "nesapu_wasm.wasm": {
+      "bytes": 30410,
+      "sha256": "24d41bb34d313831ac39a24c6f07e795ee3599240686c7573feacec32f3a2c3e"
+    }
+  }
+}
