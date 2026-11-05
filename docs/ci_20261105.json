@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "repository": "kyorohiro/tetorica-2a03-synth-tauri",
+  "sourceCommit": "9dbb6f975a0a6d12c6f77ab9c647eeb7d6416a82",
+  "runId": 42029189303,
+  "url": "https://github.com/kyorohiro/tetorica-2a03-synth-tauri/actions/runs/42029189303",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "browser",
+      "conclusion": "success",
+      "url": "https://github.com/kyorohiro/tetorica-2a03-synth-tauri/actions/runs/42029189303/job/127250950151"
+    },
+    {
+      "name": "build (macos-arm64, macos-14, dmg)",
+      "conclusion": "success",
+      "url": "https://github.com/kyorohiro/tetorica-2a03-synth-tauri/actions/runs/42029189303/job/127250950581"
+    },
+    {
+      "name": "build (macos-x86_64, macos-15-intel, dmg)",
+      "conclusion": "success",
+      "url": "https://github.com/kyorohiro/tetorica-2a03-synth-tauri/actions/runs/42029189303/job/127250950595"
+    },
+    {
+      "name": "build (linux-arm64, ubuntu-24.04-arm, deb,appimage)",
+      "conclusion": "success",
+      "url": "https://github.com/kyorohiro/tetorica-2a03-synth-tauri/actions/runs/42029189303/job/127250950597"
+    },
+    {
+      "name": "build (windows-x86_64, windows-latest, nsis)",
+      "conclusion": "success",
+      "url": "https://github.com/kyorohiro/tetorica-2a03-synth-tauri/actions/runs/42029189303/job/127250950629"
+    },
+    {
+      "name": "build (linux-x86_64, ubuntu-24.04, deb,appimage)",
+      "conclusion": "success",
+      "url": "https://github.com/kyorohiro/tetorica-2a03-synth-tauri/actions/runs/42029189303/job/127250950717"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "tetorica-2a03-synth-macos-x86_64",
+      "bytes": 10622205,
+      "expired": false
+    },
+    {
+      "name": "2a03-desktop-browser",
+      "bytes": 2147892,
+      "expired": false
+    },
+    {
+      "name": "tetorica-2a03-synth-linux-x86_64",
+      "bytes": 84539869,
+      "expired": false
+    },
+    {
+      "name": "tetorica-2a03-synth-linux-arm64",
+      "bytes": 82688957,
+      "expired": false
+    },
+    {
+      "name": "tetorica-2a03-synth-macos-arm64",
+      "bytes": 10543691,
+      "expired": false
+    },
+    {
+      "name": "tetorica-2a03-synth-windows-x86_64",
+      "bytes": 3047472,
+      "expired": false
+    }
+  ]
+}
