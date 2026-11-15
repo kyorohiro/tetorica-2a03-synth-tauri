@@ -211,3 +211,115 @@ test('failed or malformed initial native pin state leaves the control hidden', a
     assert.equal(ui.button.attributes['aria-pressed'], 'false');
   }
 });
+
+function bootToolbar(webMenu) {
+  const nodes = new Map(), events = {};
+  class Element {
+    constructor(tag) {
+      this.tag = tag; this.children = []; this.dataset = {}; this.attributes = {}; this.listeners = {};
+      this.className = ''; this.style = {};
+      this.classList = {add: (...names) => {this.className += ' ' + names.join(' ');}, toggle() {}};
+    }
+    set id(value) {this._id = value; nodes.set(value, this);} get id() {return this._id;}
+    append(...elements) {
+      for (const element of elements) {
+        if (element.parent) element.parent.children.splice(element.parent.children.indexOf(element), 1);
+        element.parent = this; this.children.push(element);
+      }
+    }
+    before(element) {
+      element.parent = this.parent; this.parent.children.splice(this.parent.children.indexOf(this), 0, element);
+    }
+    replaceChildren(...elements) {
+      for (const child of this.children) child.parent = null;
+      this.children = []; this.append(...elements);
+    }
+    setAttribute(name, value) {this.attributes[name] = value;}
+    addEventListener(type, listener) {(this.listeners[type] ||= []).push(listener);}
+    querySelector(selector) {
+      const matches = element => selector === '[data-reset-offline-cache]' ? 'resetOfflineCache' in element.dataset :
+        selector === '.synth-menu-panel' && element.className.split(' ').includes('synth-menu-panel');
+      for (const child of this.children) {
+        if (matches(child)) return child;
+        const nested = child.querySelector(selector); if (nested) return nested;
+      }
+      return null;
+    }
+    set innerHTML(value) {
+      this.markup = value;
+      if (this.id === 'synthMenu') {
+        const button = make('summary', 'synthMenuButton'), panel = make('div', 'synthMenuPanel');
+        panel.className = 'synth-menu-panel'; this.append(button, panel);
+      }
+    }
+  }
+  const make = (tag, id) => {const element = new Element(tag); if (id) element.id = id; return element;};
+  const body = make('body'), head = make('head'), title = make('div'), identity = make('div');
+  title.append(identity); body.append(title);
+  for (const id of ['loadPreset', 'savePreset', 'presetFileInput', 'loadVgm', 'vgmPanel', 'audioStatus']) body.append(make('div', id));
+  let host, menu, panel, hint;
+  const originalAction = () => {};
+  if (webMenu) {
+    host = make('div', 'synthDesktopTools'); host.dataset.webMenu = 'true';
+    menu = make('details', 'synthMenu'); panel = make('div', 'synthMenuPanel');
+    panel.className = 'synth-menu-panel';
+    const button = make('summary', 'synthMenuButton'), audio = make('section', 'synthMenuAudio');
+    hint = make('p'); audio.append(hint);
+    for (const id of ['synthMenuVgm', 'nesMenuProjectImport', 'nesMenuFilesImport', 'nesMenuProjectExport', 'nesMenuFileExport']) {
+      const action = make('button', id); action.addEventListener('click', originalAction); panel.append(action);
+    }
+    panel.append(audio); menu.append(button, panel); host.append(menu, make('button', 'synthPinButton')); title.append(host);
+  }
+  class Anchor {click() {}}
+  const window = {addEventListener(type, listener) {events[type] = listener;}, __TAURI_INTERNALS__: {invoke: async () => false}};
+  window.top = window;
+  const document = {readyState: 'complete', body, head, createElement: tag => make(tag), getElementById: id => nodes.get(id),
+    addEventListener() {}, querySelector(selector) {
+      if (selector === '.title-row') return title;
+      if (selector === '.product-identity') return identity;
+      if (selector === '#synthMenuAudio > p') return hint;
+      return body.querySelector(selector);
+    }};
+  vm.runInNewContext(source, {window, document, location: new URL('tauri://localhost/index.html'),
+    URL: {createObjectURL() {}, revokeObjectURL() {}}, HTMLAnchorElement: Anchor, Map, Uint8Array, Array, DataView, TextEncoder});
+  return {nodes, events, menu, panel, hint, host: nodes.get('synthDesktopTools'), originalAction, body};
+}
+
+test('desktop extends the web menu while preserving project actions and existing handlers', async () => {
+  const ui = bootToolbar(true); await settle();
+  assert.equal(ui.host.children[0], ui.menu);
+  assert.equal(ui.nodes.get('synthMenuPanel'), ui.panel);
+  for (const id of ['nesMenuProjectImport', 'nesMenuFilesImport', 'nesMenuProjectExport', 'nesMenuFileExport']) {
+    assert.equal(ui.nodes.get(id).parent, ui.panel);
+    assert.deepEqual(ui.nodes.get(id).listeners.click, [ui.originalAction]);
+  }
+  assert.equal(ui.nodes.get('loadPreset').parent, ui.body);
+  assert.equal(ui.nodes.get('savePreset').parent, ui.body);
+  assert.equal(ui.hint.id, 'synthBrowserAudioHint');
+  const reload = ui.host.querySelector('[data-reset-offline-cache]');
+  assert.equal(reload.textContent, 'Reload');
+  assert.equal(reload.dataset.closeSynthMenu, '');
+  assert.equal(reload.listeners.click.length, 1);
+  for (const listener of ui.nodes.get('synthMenuVgm').listeners.click) listener();
+  assert.equal(ui.nodes.get('vgmPanel').open, true);
+  ui.events['tetorica-synth-ready'](); ui.events['tetorica-synth-ready']();
+  assert.equal(ui.panel.children.filter(section => section.children.includes(reload)).length, 1);
+  assert.equal(reload.listeners.click.length, 1);
+  assert.equal(ui.nodes.get('synthMenuVgm').listeners.click.length, 2);
+});
+
+test('releases without a web menu retain the desktop toolbar and preset actions', async () => {
+  const ui = bootToolbar(false); await settle();
+  const menu = ui.nodes.get('synthMenu'), panel = ui.nodes.get('synthMenuPanel');
+  assert.equal(ui.host.children[0], menu);
+  assert.equal(ui.host.children[1], ui.nodes.get('synthPinButton'));
+  assert.equal(ui.nodes.get('loadPreset').textContent, 'Instrument · 2A03 preset…');
+  assert.equal(ui.nodes.get('savePreset').textContent, 'Instrument · 2A03 preset…');
+  assert.equal(ui.nodes.get('loadPreset').parent.parent, panel);
+  assert.equal(ui.nodes.get('savePreset').parent.parent, panel);
+  const reload = ui.host.querySelector('[data-reset-offline-cache]');
+  assert.equal(reload.listeners.click.length, 1);
+  ui.events['tetorica-synth-ready']();
+  assert.equal(ui.nodes.get('synthMenu'), menu);
+  assert.equal(reload.listeners.click.length, 1);
+});

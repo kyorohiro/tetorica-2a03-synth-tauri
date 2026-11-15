@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from unittest import mock
 import zipfile
+from test_import_release import release_files, write_archive
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('version_importer', ROOT / 'scripts/import_release.py')
@@ -75,6 +76,27 @@ class ImportVersionTests(unittest.TestCase):
         self.assertNotEqual(receipt['version'], '1.2.3')
         self.assertEqual((self.root / 'dist/index.html').read_text(), 'new web app')
         self.assertFalse((self.root / importer.LOCAL_MANIFEST).exists())
+
+    def test_code_release_and_explicit_version_pass_the_real_receipt_validation(self):
+        write_archive(self.archive, release_files(with_code=True))
+        with mock.patch.object(importer, 'ROOT', self.root), \
+             mock.patch.object(sys, 'argv', ['import_release.py', '--version', '0.0.2', str(self.archive)]), \
+             contextlib.redirect_stdout(io.StringIO()):
+            importer.main()
+        self.assert_version('0.0.2')
+        receipt = importer.check(self.root)
+        self.assertIn('js/native-fx-worklet.js', receipt['files'])
+        self.assertEqual((self.root / 'dist/js/native_audio_effect.wasm').read_bytes(),
+                         release_files(with_code=True)['js/native_audio_effect.wasm'])
+
+    def test_invalid_code_receipt_keeps_the_previous_app_version_and_distribution(self):
+        files = release_files(with_code=True)
+        files['js/native_audio_effect.wasm'] = b'invalid effect'
+        write_archive(self.archive, files)
+        before = self.snapshot()
+        with self.assertRaisesRegex(ValueError, 'receipt mismatch'):
+            importer.import_release(self.root, self.archive, version='0.0.2')
+        self.assertEqual(self.snapshot(), before)
 
     def test_invalid_versions_are_rejected_without_writes(self):
         for version in ('invalid', '01.2.3', '../escape', '1.2'):

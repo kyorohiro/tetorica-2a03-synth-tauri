@@ -147,12 +147,20 @@ async function run(name, engine, backend) {
     console.log(`CHECK ${name}: desktop toolbar / pin / lazy native output controls`);
     await page.goto(backend+'/index.html');
     await page.waitForFunction(()=>window.tetoricaSynthAudio&&document.querySelector('#synthPinButton')?.hidden===false&&document.querySelector('#desktop-audio-native'));
+    const webMenu=await page.locator('#synthDesktopTools[data-web-menu="true"]').count()>0;
+    const presetImport=webMenu?'#synthMenuPresetImport':'#loadPreset';
+    const presetExport=webMenu?'#synthMenuPresetExport':'#savePreset';
     assert.equal(await page.locator('#synthPinButton').getAttribute('aria-pressed'),'false');
     assert.equal(await page.title(),'Tetorica 2A03 Synth');
     assert.match(await page.locator('#synthTitle').textContent(),/Tetorica\s+2A03 Synth/);
     assert.equal(await page.locator('#sourcePanel').evaluate(node=>node.open),true);
     for(const id of ['vgmPanel','filesPanel'])assert.equal(await page.locator(`#${id}`).evaluate(node=>node.open),false,'optional panels initially stay compact');
-    assert.equal(await page.locator('#loadPreset').textContent(),'Instrument · 2A03 preset…');
+    assert.equal(await page.locator(presetImport).textContent(),webMenu?'Instrument JSON…':'Instrument · 2A03 preset…');
+    if(webMenu) {
+      for(const id of ['nesMenuProjectImport','nesMenuFilesImport','nesMenuProjectExport','nesMenuFileExport'])
+        assert.equal(await page.locator(`#synthMenuPanel #${id} button`).count(),1,'project actions stay in the web menu');
+      assert.equal(await page.locator('#synthBrowserAudioHint').isHidden(),true);
+    }
     assert.equal(await page.evaluate(()=>window.desktopAudit.contexts.length),0);
     await page.uncheck('#keepMonitorVisible');
     await page.click('#synthPinButton');await page.waitForFunction(()=>document.querySelector('#synthPinButton').getAttribute('aria-pressed')==='true');
@@ -176,12 +184,12 @@ async function run(name, engine, backend) {
     await page.waitForFunction(()=>document.querySelector('#desktop-audio-status').textContent==='Web Audio output');await audition();
 
     console.log(`CHECK ${name}: native binary preset save / native save cancellation / reload cancellation`);
-    await menu();await page.click('#savePreset');
+    await menu();await page.click(presetExport);
     await page.waitForFunction(()=>window.desktopAudit.saves.length===1);
     const saved=await page.evaluate(()=>window.desktopAudit.saves[0]);
     assert.equal(saved.header.filename,'2a03-voice.json');const preset=JSON.parse(saved.text);
     assert.equal(preset.format,'tetorica-nes-fds-voice');assert.equal(preset.version,7);assert.equal(preset.source,'pulse');
-    await page.evaluate(()=>{window.desktopAudit.cancelSave=true;});await menu();await page.click('#savePreset');
+    await page.evaluate(()=>{window.desktopAudit.cancelSave=true;});await menu();await page.click(presetExport);
     await page.waitForFunction(()=>document.querySelector('#audioStatus').textContent==='Save cancelled.');
     assert.equal(await page.evaluate(()=>window.desktopAudit.saves.length),2);
     await page.evaluate(()=>{window.desktopAudit.cancelSave=false;});
@@ -197,11 +205,11 @@ async function run(name, engine, backend) {
     assert.equal(current.preset.source,'pulse');assert.match(await page.locator('[data-vgm-voice]').textContent(),/Pulse/);
     await audition();
     const beforeLoadCancel=structuredClone((await state()).preset);
-    await menu();const cancelledChooser=page.waitForEvent('filechooser');await page.click('#loadPreset');
+    await menu();const cancelledChooser=page.waitForEvent('filechooser');await page.click(presetImport);
     await(await cancelledChooser).setFiles([]);assert.deepEqual((await state()).preset,beforeLoadCancel,'cancelled instrument selection keeps the current sound');await audition();
     const imported=structuredClone(preset);imported.name='Desktop FDS test';imported.source='fds';
     imported.fds.wave=Array.from({length:64},(_,index)=>index<32?63:0);imported.fds.volume=24;
-    await menu();const waveChooser=page.waitForEvent('filechooser');await page.click('#loadPreset');
+    await menu();const waveChooser=page.waitForEvent('filechooser');await page.click(presetImport);
     await(await waveChooser).setFiles({name:'desktop-fds.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(imported))});
     current=await wait(value=>value.preset.name===imported.name&&value.preset.source==='fds');assert.deepEqual(current.preset,imported);await audition();
 
@@ -263,7 +271,7 @@ async function run(name, engine, backend) {
     await page.mouse.up();current=await wait(value=>value.voices.length===0&&JSON.stringify(value.preset.fds.wave)!==JSON.stringify(beforeFdsEdit.preset.fds.wave));
     assert.equal(current.preset.fds.wave.length,64);assert(current.preset.fds.wave.every(value=>Number.isInteger(value)&&value>=0&&value<=63));
     await page.keyboard.up('a');await audition();
-    await menu();const restoreChooser=page.waitForEvent('filechooser');await page.click('#loadPreset');
+    await menu();const restoreChooser=page.waitForEvent('filechooser');await page.click(presetImport);
     await(await restoreChooser).setFiles({name:'desktop-fds-restored.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(imported))});
     await wait(value=>JSON.stringify(value.preset)===JSON.stringify(imported));
 

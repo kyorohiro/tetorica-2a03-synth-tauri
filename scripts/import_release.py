@@ -27,6 +27,8 @@ NATIVE_INPUTS = {
     'sources/third_party/tetorica-nes/nes_core.h', 'sources/wasm/nesapu_wasm.cpp',
 }
 BROWSER_ENTRIES = {'synth-2a03/synth.js', 'synth-2a03/processor.js', 'synth-2a03/synth.css'}
+OPTIONAL_BROWSER_ENTRIES = {'js/native-fx-worklet.js'}
+CODE_EFFECT_SOURCE = 'tetorica_src/runtime/generated/effects/gain.wasm'
 
 
 def digest(data):
@@ -67,10 +69,11 @@ def validate_release(destination, hashes):
             or browser.get('productId') != 'tetorica-2a03-synth' or native.get('component') != 'nesapu'):
         raise ValueError('Expected 2A03 Synth / NES-FDS source receipts')
     entries = records(browser.get('bundles'), 'browser entry')
-    if entries.keys() != BROWSER_ENTRIES:
+    if (not BROWSER_ENTRIES <= entries.keys()
+            or entries.keys() - BROWSER_ENTRIES - OPTIONAL_BROWSER_ENTRIES):
         raise ValueError('Expected complete 2A03 Synth entry receipts')
     modules = records(browser.get('modules'), 'readable browser module')
-    if not BROWSER_ENTRIES <= modules.keys():
+    if not entries.keys() <= modules.keys():
         raise ValueError('Expected all browser entries in the readable module receipts')
     original = records(browser.get('originalInputs'), 'original browser input')
     for name, record in modules.items():
@@ -91,6 +94,8 @@ def validate_release(destination, hashes):
         verify(record, name)
         if any(record.get(key) != modules[name].get(key) for key in ['bytes', 'sha256']):
             raise ValueError(f'Browser entry differs from its module receipt: {name}')
+    if OPTIONAL_BROWSER_ENTRIES & entries.keys():
+        verify(original.get(CODE_EFFECT_SOURCE), 'js/native_audio_effect.wasm')
     source = browser.get('sourceArchive', {})
     if not isinstance(source, dict) or source.get('path') != 'sources/2a03-synth-browser-inputs.zip':
         raise ValueError('Expected browser source archive receipt')

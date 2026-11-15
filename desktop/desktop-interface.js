@@ -46,8 +46,7 @@
       dialog.append(message, cancel, confirm); document.body.append(dialog); dialog.showModal(); cancel.focus();
     });
   }
-  // The packaged browser assets stay unchanged. Add the same desktop toolbar
-  // used by FM2612 / SPU, using the 2A03 app's palette.
+  // Older releases need a toolbar host. Newer releases include their own menu.
   function ensureToolbarHost() {
     if (document.getElementById('synthDesktopTools')) return;
     const title = document.querySelector('.title-row');
@@ -63,6 +62,26 @@
   function mountToolbar() {
     const host = document.getElementById('synthDesktopTools');
     if (!host || host.dataset.toolbarMounted) return;
+    if (host.dataset.webMenu === 'true') {
+      const panel = document.getElementById('synthMenuPanel');
+      if (!panel) return;
+      if (!host.querySelector('[data-reset-offline-cache]')) {
+        const section = document.createElement('section');
+        section.className = 'synth-menu-section synth-menu-actions';
+        const reload = document.createElement('button');
+        reload.type = 'button'; reload.textContent = 'Reload';
+        reload.dataset.resetOfflineCache = ''; reload.dataset.closeSynthMenu = '';
+        section.append(reload); panel.append(section);
+      }
+      const hint = document.querySelector('#synthMenuAudio > p');
+      if (hint) hint.id = 'synthBrowserAudioHint';
+      document.getElementById('synthMenuVgm')?.addEventListener('click', () => {
+        const library = document.getElementById('vgmPanel');
+        if (library) library.open = true;
+      });
+      host.dataset.toolbarMounted = 'true';
+      return;
+    }
     const identity = document.querySelector('.product-identity');
     const pin = document.getElementById('synthPinButton');
     const audio = document.getElementById('synthMenuAudio');

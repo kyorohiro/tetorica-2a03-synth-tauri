@@ -3,7 +3,8 @@
 A desktop version of [Tetorica 2A03 Synth](https://kyorohiro.github.io/hello_ymfm_wasm/synth-2a03/index.html).
 Play and edit NES Pulse, Triangle, Noise, DMC and FDS; draw DMC target curves or
 FDS Wave RAM, import sounds from VGM / VGZ, and take instruments away as presets,
-raw DPCM or JavaScript. The app does not play complete game songs.
+raw DPCM or JavaScript. Code performance shares the edited APU, and VGM reference
+playback provides Live channel observation, paused audition and Capture.
 
 The desktop shell follows Tetorica's [DMG](https://github.com/kyorohiro/tetorica-dmg-synth-tauri),
 [SPU](https://github.com/kyorohiro/tetorica-spu-synth-tauri) and
@@ -28,7 +29,8 @@ configured sound; the Pitch wheels do not tune them. See the complete
 [bundled Synth guide](dist/README.md) for hardware envelopes, gates, modulation,
 DMC editing, and the software click guard.
 
-- **Menu → Import** opens an instrument preset or a VGM / VGZ sound library.
+- **Menu → Import** opens an instrument preset, a VGM / VGZ sound library,
+  project files or a Cassette project.
 - **Menu → Export** and the browser editor's save controls use a native save
   dialog. Preset JSON retains playback controls; raw DPCM retains sample bytes.
 - **Pin** toggles always-on-top for the current app session.
@@ -40,7 +42,8 @@ The Web editor remains available, including both Pitch wheels, Octave, Master
 DMC's Auto fit height is a software drawing aid and may adjust nearby bits;
 its decoded blue curve still obeys the hardware's ±2 steps and DAC limits.
 FDS / DMC's optional click guard is also a software output feature.
-Save instruments before reloading; automatic session restoration is not included.
+Files and the edited Auto instrument save locally. Export a Cassette for a
+portable project copy. Importing a project requires an explicit Run to start Code.
 
 ## Audio output
 
@@ -48,7 +51,8 @@ Both outputs use the same NES APU + FDS WASM / AudioWorklet graph. Native output
 sends final, Master-scaled PCM through binary Tauri IPC to Rust / CPAL for device
 playback. Synthesis continues inside the WebView.
 
-Switching output stops held notes and resets Pitch, keeping the instrument.
+Switching output stops Code, reference playback and held notes, resets Pitch,
+and keeps the instrument.
 Native starts with the default system output; select another device and choose
 Apply device to switch it. Output failure stops playback and falls back to Web
 Audio with an explanation. Enable audio restarts a closed engine.

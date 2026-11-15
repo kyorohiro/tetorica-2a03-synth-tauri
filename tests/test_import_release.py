@@ -10,7 +10,7 @@ importer = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(importer)
 
 
-def release_files(text=b'<html>test</html>'):
+def release_files(text=b'<html>test</html>', with_code=False):
     files = {
         'index.html': text, 'synth-2a03/index.html': text,
         'synth-2a03/synth.js': b'// readable app', 'synth-2a03/processor.js': b'// processor',
@@ -30,13 +30,20 @@ def release_files(text=b'<html>test</html>'):
     def record(name):
         return {'path': name, 'bytes': len(files[name]), 'sha256': importer.digest(files[name])}
     entries = ['synth-2a03/synth.js', 'synth-2a03/processor.js', 'synth-2a03/synth.css']
+    if with_code:
+        entries.append('js/native-fx-worklet.js')
+        files['js/native-fx-worklet.js'] = b'// readable software effect processor'
+        files['js/native_audio_effect.wasm'] = b'\x00asm\x01\x00\x00\x00'
     modules = [{**record(name), 'sourcePath': 'docs/' + name, 'localImports':
                 ['../generated/nesapu_wasm.js', '../js/nesapu_wasm.js'] if name.endswith('/processor.js') else []}
                for name in [*entries, 'js/nesapu_wasm.js']]
+    original = [{'path': item['sourcePath'], 'bytes': item['bytes'], 'sha256': item['sha256']} for item in modules]
+    if with_code:
+        original.append({**record('js/native_audio_effect.wasm'), 'path': importer.CODE_EFFECT_SOURCE})
     files['sources/2a03-synth-browser.json'] = json.dumps({
         'productId': 'tetorica-2a03-synth', 'builder': {'name': 'source-copy', 'minify': False, 'bundle': False},
         'bundles': [record(name) for name in entries], 'modules': modules,
-        'originalInputs': [{'path': item['sourcePath'], 'bytes': item['bytes'], 'sha256': item['sha256']} for item in modules],
+        'originalInputs': original,
         'sourceArchive': record('sources/2a03-synth-browser-inputs.zip'),
     }).encode()
     files['sources/NES-FDS.json'] = json.dumps({
@@ -92,6 +99,40 @@ class ImportTests(unittest.TestCase):
     def test_preserves_all_original_bytes(self):
         files = release_files()
         self.assertEqual(self.unpack(files), {name: importer.digest(data) for name, data in files.items()})
+
+    def test_code_release_accepts_the_effect_entry_and_preserves_original_bytes(self):
+        files = release_files(with_code=True)
+        self.assertEqual(self.unpack(files), {name: importer.digest(data) for name, data in files.items()})
+
+    def test_code_effect_entry_requires_its_module_and_matching_effect_binary(self):
+        for failure in ['missing module', 'missing worklet', 'changed worklet',
+                        'missing effect', 'changed effect', 'missing effect source']:
+            with self.subTest(failure=failure):
+                files = release_files(with_code=True)
+                receipt = json.loads(files['sources/2a03-synth-browser.json'])
+                if failure == 'missing module':
+                    receipt['modules'] = [item for item in receipt['modules'] if item['path'] != 'js/native-fx-worklet.js']
+                elif failure == 'missing worklet':
+                    del files['js/native-fx-worklet.js']
+                elif failure == 'changed worklet':
+                    files['js/native-fx-worklet.js'] = b'changed'
+                elif failure == 'missing effect':
+                    del files['js/native_audio_effect.wasm']
+                elif failure == 'changed effect':
+                    files['js/native_audio_effect.wasm'] = b'changed'
+                else:
+                    receipt['originalInputs'] = [item for item in receipt['originalInputs'] if item['path'] != importer.CODE_EFFECT_SOURCE]
+                files['sources/2a03-synth-browser.json'] = json.dumps(receipt).encode()
+                with self.assertRaises(ValueError):
+                    self.unpack(files)
+
+    def test_unrecognized_browser_entry_is_rejected(self):
+        files = release_files(with_code=True)
+        receipt = json.loads(files['sources/2a03-synth-browser.json'])
+        receipt['bundles'].append({'path': 'js/unexpected.js', 'bytes': 1, 'sha256': '0' * 64})
+        files['sources/2a03-synth-browser.json'] = json.dumps(receipt).encode()
+        with self.assertRaisesRegex(ValueError, 'complete 2A03 Synth entry'):
+            self.unpack(files)
 
     def test_check_detects_modified_or_extra_files(self):
         with tempfile.TemporaryDirectory() as tmp:
