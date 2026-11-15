@@ -102,6 +102,19 @@ python3 scripts/import_release.py --check
 npm test
 ```
 
+The optional `--version X.Y.Z` sets the **desktop app version**, independently
+of the Web ZIP filename/version. It synchronizes `package.json`,
+`package-lock.json`, `src-tauri/Cargo.toml`, `src-tauri/Cargo.lock` (only this
+app's crate), and `src-tauri/tauri.conf.json`; dependency versions stay pinned.
+Omit the flag to keep the current desktop version. The `release.lock.json`
+label/hash still describes the imported Web distribution.
+
+For example, append `--version 1.2.3` to the import command above. After checks,
+run the existing local `sh deploy_mac.sh` release build, review the final locks,
+and commit the imported `dist/`, receipt and changed metadata/locks together
+before creating the release tag. Importing alone does not build, commit or tag.
+
+
 Keep dist/ and release.lock.json together in the same commit. Successful import
 replaces dist and clears local edits; commit or copy your modifications first.
 An invalid import retains the existing app and local manifest. Keep
