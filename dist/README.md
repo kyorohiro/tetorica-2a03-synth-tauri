@@ -15,6 +15,20 @@ table, hear how the controls interact, and take the instrument away as a preset
 or JavaScript. The keyboard, two Pitch wheels, output monitor and file workflow
 follow Tetorica's FM2612, DMG and SPU Synths.
 
+## Code workspace
+
+The header **Code / Synth** switch changes the workspace layout. Code opens
+beside Files with persistent **Code / 2A03 + FDS / Keyboard** tabs; choosing
+another tab does not stop a running script or restore the compact layout.
+Synth restores the original instrument view. The original Master slider and
+collapsible Reference playback remain available above Files and the workspace.
+Run / Apply / Stop stay visible in each expanded view. Selecting an instrument
+continues to apply its sound without forcing Code navigation.
+
+Code also supports `build / schedule / compile` for Pulse, Triangle, Noise and prepared DMC playback.
+Fresh Cassettes include `examples/timed-apu.js` and `examples/timed-dmc.js`; see [Timed API](https://github.com/kyorohiro/hello_ymfm_wasm/blob/main/docs/synth-2a03/TIMED_API.md)
+for snapshots, exact hardware trigger semantics and the remaining FDS/memory scope.
+
 ## Play
 
 Select **Enable audio**, then click a key or play the displayed computer keys.

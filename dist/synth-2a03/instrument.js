@@ -21,7 +21,7 @@ export class NesInstrument {
     this.codeSession=0;this.codeActive=false;this.codeRaw=Array(6).fill(false);this.codeFrames=0;
     this.codePresets=Array(6).fill(null);this.codeFdsVolume=null;
     this.memoryVersion=0;this.sampleCache=null;
-    this.assets={dmc:null,wave:null,modulation:null};
+    this.assets={dmc:null,wave:null,modulation:null};this.dmcTimedSelection=null;
     this._apply(null, this.preset); this.stop();
   }
   _open() {if (this.disposed) throw new Error('NES instrument is disposed');}
@@ -84,6 +84,7 @@ export class NesInstrument {
     // including after a hardware counter has already stopped its sequencer.
     if ((only===null||only===2) && changed(p => p.triangle, next.triangle) && !this.owners[2]) this._triangleControl(next);
     if ((only===null||only===3) && changed(p => p.noise, next.noise)) this._noiseVoice(next, {live:Boolean(this.owners[3])});
+    if((only===null||only===4)&&changed(p=>p.dmc.data,next.dmc.data)&&!next.dmc.data.length)this.dmcTimedSelection=null;
     if ((only===null||only===4) && changed(p => p.dmc.data, next.dmc.data) && next.dmc.data.length) {
       // This instrument runs inside the Worklet with a DirectTransport, so
       // the public low-level memory upload completes synchronously. Padding
@@ -91,7 +92,7 @@ export class NesInstrument {
       const length = Math.ceil((next.dmc.data.length - 1) / 16) * 16 + 1;
       const bytes = new Uint8Array(length).fill(0xaa); bytes.set(next.dmc.data);
       this.synth.loadMemory(bytes, 0xc000);
-      this.memoryVersion++;this.assets.dmc=Array.from(next.dmc.data);
+      this.memoryVersion++;this.assets.dmc=Array.from(next.dmc.data);this.dmcTimedSelection={address:0xc000,length};
     }
     if ((only===null||only===4) && changed(p => [p.dmc.rate, p.dmc.loop], [next.dmc.rate, next.dmc.loop])) this.synth.writeRegister(0x4010, (next.dmc.loop ? 64 : 0) | next.dmc.rate);
     if ((only===null||only===5) && changed(p => p.fds.wave, next.fds.wave)){this.synth.fds.setWave(next.fds.wave);this.assets.wave=Array.from(next.fds.wave);}
@@ -147,7 +148,7 @@ export class NesInstrument {
   loadPreset(value) {
     this._open(); const next = readPreset(value);
     if(this.codeActive)return this.setPreset(next);
-    this.stop(); this.synth.reset();this.memoryVersion++; this.pitch = 0; this._apply(null, next); this.preset = next;this.channelPresets=Array.from({length:6},(_,ch)=>({...readPreset(next),source:sourceFor(ch)}));this.codeRaw.fill(false); return this.read();
+    this.stop(); this.synth.reset();this.dmcTimedSelection=null;this.memoryVersion++; this.pitch = 0; this._apply(null, next); this.preset = next;this.channelPresets=Array.from({length:6},(_,ch)=>({...readPreset(next),source:sourceFor(ch)}));this.codeRaw.fill(false); return this.read();
   }
   noteOn(id, midi, physicalChannel) {
     this._open();
@@ -191,7 +192,7 @@ export class NesInstrument {
       const {rate, loop, level, data} = preset.dmc;
       if(!equal(this.assets.dmc,data)) {
         const bytes=new Uint8Array(Math.ceil((data.length-1)/16)*16+1).fill(0xaa);bytes.set(data);
-        this.synth.loadMemory(bytes,0xc000);this.memoryVersion++;this.assets.dmc=Array.from(data);
+        this.synth.loadMemory(bytes,0xc000);this.memoryVersion++;this.assets.dmc=Array.from(data);this.dmcTimedSelection={address:0xc000,length:bytes.length};
       }
       this.synth.noteOff(4);
       this.synth.writeRegister(0x4010, (loop ? 64 : 0) | rate);
@@ -250,6 +251,32 @@ export class NesInstrument {
     this._open();validChannel(channel);const next={...readPreset(value),source:sourceFor(channel)},previous=this.channelPresets[channel];
     this._apply(previous,next,channel);this.channelPresets[channel]=next;this.codeRaw[channel]=false;this.codePresets[channel]=null;
     return this.read();
+  }
+  applyTimedWrite(register,value,owner,{nesRetriggerDmc=false,fdsState,preserveOwner=false,nesFdsOff=false}={}) {
+    this._open();
+    const state=this.synth._getState();
+    if(nesFdsOff&&this.owners[5]&&this.owners[5].timedOwner!==owner)return;
+    if(register===0x4083&&!preserveOwner){
+      if(value&128){if(this.owners[5]&&this.owners[5].timedOwner!==owner)return;this._forget(5);}
+      else {this._ownCode(5,this.codeSession);this.owners[5].timedOwner=owner;this.codeRaw[5]=true;}
+    }
+    if(fdsState&&register>=0x4023)this.synth._adoptState({...state,fdsGain:fdsState.fdsGain,fdsMaster:fdsState.fdsMaster});
+    if(register===0x4015){
+      const enabled=(state.enabled&15)|(this.core.getState().dmcRemaining>0?16:0);
+      for(let ch=0;ch<5;ch++)if(!(value&(1<<ch))&&this.owners[ch]&&this.owners[ch].timedOwner!==owner&&!(ch===4&&nesRetriggerDmc))value=(value&~(1<<ch))|(enabled&(1<<ch));
+      for(let ch=0;ch<5;ch++){
+        if(!(value&(1<<ch))&&this.owners[ch]?.timedOwner===owner||ch===4&&nesRetriggerDmc&&!(value&16))this._forget(ch);
+        else if((value&(1<<ch))&&!(enabled&(1<<ch))){this._ownCode(ch,this.codeSession);this.owners[ch].timedOwner=owner;this.codeRaw[ch]=true;}
+      }
+    }
+    const channel=[0x4003,0x4007,0x400b,0x400f].indexOf(register);
+    if(channel>=0&&(state.enabled&(1<<channel))){this._ownCode(channel,this.codeSession);this.owners[channel].timedOwner=owner;this.codeRaw[channel]=true;}
+    this.synth.writeRegister(register,value);
+    if(register>=0x4040&&register<=0x407f)this.assets.wave=null;
+    if(register===0x4088)this.assets.modulation=null;
+  }
+  cancelTimedOwner(owner){
+    for(let ch=0;ch<6;ch++)if(this.owners[ch]?.timedOwner===owner){this._stopChannel(ch);this._forget(ch);}
   }
   beginCode(...args) {
     this._open();if(args.length)throw new TypeError('Code session takes no arguments');
@@ -319,15 +346,15 @@ export class NesInstrument {
     }
     const [group,member]=method.split('.');
     const result=member?this.synth[group][member](...args):this.synth[group](...args);
-    if(method==='reset'||method==='resetRegisters') {this.voices.clear();this.slots.fill(null);this.owners.fill(null);this.codeRaw.fill(true);this.codePresets.fill(null);this.memoryVersion++;this.assets={dmc:null,wave:null,modulation:null};}
+    if(method==='reset'||method==='resetRegisters') {this.voices.clear();this.slots.fill(null);this.owners.fill(null);this.codeRaw.fill(true);this.codePresets.fill(null);this.memoryVersion++;this.assets={dmc:null,wave:null,modulation:null};this.dmcTimedSelection=null;}
     else if(method==='writeRegister'){this.observeExternalWrite(args[0],args[1],session);if(args[0]===0x4080)this.codeFdsVolume=args[1];}
     else if(method==='dmc.play'){this._ownCode(4,session);this.codeRaw[4]=true;}
     else if(method==='dmc.loadSample'){
       // DirectTransport uploads synchronously; the public method resolves its
       // sample metadata in a microtask. The processor serializes that Promise.
-      this._forget(4);this.codeRaw[4]=true;this.memoryVersion++;this.assets.dmc=null;
+      this._forget(4);this.codeRaw[4]=true;this.memoryVersion++;this.assets.dmc=null;this.dmcTimedSelection=null;
     } else if(method==='loadMemory') {
-      this.memoryVersion++;this.assets.dmc=null;
+      this.memoryVersion++;this.assets.dmc=null;this.dmcTimedSelection=null;
     } else if(['pulse.setVoice','noise.setVoice','fds.setWave','fds.setVolume','fds.setModulation'].includes(method))this._codeVoicePatch(channel,method,args);
     return result;
   }
