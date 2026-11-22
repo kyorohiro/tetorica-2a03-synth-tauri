@@ -40,8 +40,6 @@ jobs:
           if-no-files-found: ignore
 
   build:
-    permissions:
-      contents: write # tauri-action attaches assets to the draft release on tags
     strategy:
       fail-fast: false
       matrix:
@@ -87,23 +85,11 @@ jobs:
         run: cargo test --manifest-path src-tauri/Cargo.toml --locked
       - name: Verify committed Synth assets
         run: python scripts/import_release.py --check
+      # The parent release script verifies artifacts and attaches signed Mac builds to the draft.
       - name: Build desktop app
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: tauri-apps/tauri-action@v0
         with:
           args: --bundles ${{ matrix.bundles }} -- --locked
-      - name: Build and attach to draft release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: --bundles ${{ matrix.bundles }} -- --locked
-          tagName: ${{ github.ref_name }}
-          releaseName: Tetorica 2A03 Synth ${{ github.ref_name }}
-          releaseBody: Desktop builds of Tetorica 2A03 Synth. Unsigned builds; review before publishing.
-          releaseDraft: true
-          prerelease: false
       - name: Upload installers
         uses: actions/upload-artifact@v4
         with:
